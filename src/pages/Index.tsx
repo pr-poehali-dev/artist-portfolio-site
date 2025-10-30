@@ -1,30 +1,51 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [portfolioItems, setPortfolioItems] = useState([
+    { title: 'Драматический сериал', year: '2024', role: 'Главный художник', video: '' },
+    { title: 'Кинофильм "Время"', year: '2023', role: 'Художник-постановщик', video: '' },
+    { title: 'ТВ-шоу', year: '2023', role: 'Арт-директор', video: '' },
+    { title: 'Документальный фильм', year: '2022', role: 'Художник', video: '' },
+  ]);
+  const [awards, setAwards] = useState([
+    { name: 'Золотой орел', year: '2024', category: 'Лучшая работа художника', video: '' },
+    { name: 'ТЭФИ', year: '2023', category: 'Художник года', video: '' },
+    { name: 'Ника', year: '2022', category: 'Лучшая сценография', video: '' },
+  ]);
+  const portfolioVideoRef = useRef<HTMLInputElement>(null);
+  const awardVideoRef = useRef<HTMLInputElement>(null);
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const portfolioItems = [
-    { title: 'Драматический сериал', year: '2024', role: 'Главный художник' },
-    { title: 'Кинофильм "Время"', year: '2023', role: 'Художник-постановщик' },
-    { title: 'ТВ-шоу', year: '2023', role: 'Арт-директор' },
-    { title: 'Документальный фильм', year: '2022', role: 'Художник' },
-  ];
+  const handlePortfolioVideoUpload = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const videoUrl = URL.createObjectURL(file);
+      const newItems = [...portfolioItems];
+      newItems[index].video = videoUrl;
+      setPortfolioItems(newItems);
+    }
+  };
 
-  const awards = [
-    { name: 'Золотой орел', year: '2024', category: 'Лучшая работа художника' },
-    { name: 'ТЭФИ', year: '2023', category: 'Художник года' },
-    { name: 'Ника', year: '2022', category: 'Лучшая сценография' },
-  ];
+  const handleAwardVideoUpload = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const videoUrl = URL.createObjectURL(file);
+      const newAwards = [...awards];
+      newAwards[index].video = videoUrl;
+      setAwards(newAwards);
+    }
+  };
 
   const education = [
     { institution: 'ВГИК', degree: 'Магистр', field: 'Художник кино и телевидения', year: '2015-2020' },
@@ -156,7 +177,32 @@ const Index = () => {
                           {award.year}
                         </Badge>
                       </div>
-                      <p className="text-muted-foreground">{award.category}</p>
+                      <p className="text-muted-foreground mb-4">{award.category}</p>
+                      {award.video ? (
+                        <div className="mt-4">
+                          <video controls className="w-full rounded-lg border border-border">
+                            <source src={award.video} type="video/mp4" />
+                          </video>
+                        </div>
+                      ) : (
+                        <div className="mt-4">
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => handleAwardVideoUpload(index, e)}
+                            className="hidden"
+                            id={`award-video-${index}`}
+                          />
+                          <label htmlFor={`award-video-${index}`}>
+                            <Button variant="outline" className="cursor-pointer" asChild>
+                              <span>
+                                <Icon name="Upload" size={16} className="mr-2" />
+                                Загрузить видео
+                              </span>
+                            </Button>
+                          </label>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -195,30 +241,94 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="portfolio" className="py-32">
-        <div className="container mx-auto px-6">
+      <section id="portfolio" className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/20 to-transparent" />
+        </div>
+        <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold mb-12 text-center">Портфолио</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {portfolioItems.map((item, index) => (
-                <Card key={index} className="group overflow-hidden bg-card border-border hover:border-primary transition-all cursor-pointer">
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary relative overflow-hidden">
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Icon name="Film" size={64} className="text-white/60 group-hover:scale-110 transition-transform" />
+            <div className="relative">
+              <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory">
+                {portfolioItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex-shrink-0 w-[320px] snap-center"
+                    style={{
+                      transform: `rotate(${index % 2 === 0 ? -2 : 2}deg)`,
+                    }}
+                  >
+                    <div className="bg-background border-8 border-white/90 shadow-2xl p-2 hover:scale-105 transition-transform duration-300">
+                      <div className="relative bg-card border-2 border-dashed border-primary/30">
+                        <div className="absolute -left-3 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent flex flex-col justify-around py-4">
+                          {[...Array(8)].map((_, i) => (
+                            <div key={i} className="w-full h-3 bg-background border border-border rounded-sm" />
+                          ))}
+                        </div>
+                        <div className="absolute -right-3 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent flex flex-col justify-around py-4">
+                          {[...Array(8)].map((_, i) => (
+                            <div key={i} className="w-full h-3 bg-background border border-border rounded-sm" />
+                          ))}
+                        </div>
+                        
+                        {item.video ? (
+                          <div className="aspect-[4/5] relative overflow-hidden">
+                            <video controls className="w-full h-full object-cover">
+                              <source src={item.video} type="video/mp4" />
+                            </video>
+                          </div>
+                        ) : (
+                          <div className="aspect-[4/5] bg-gradient-to-br from-background via-secondary to-background relative overflow-hidden group">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Icon name="Film" size={80} className="text-primary/30" />
+                            </div>
+                            <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <input
+                                type="file"
+                                accept="video/*"
+                                onChange={(e) => handlePortfolioVideoUpload(index, e)}
+                                className="hidden"
+                                id={`portfolio-video-${index}`}
+                              />
+                              <label htmlFor={`portfolio-video-${index}`}>
+                                <Button variant="outline" className="cursor-pointer border-white text-white hover:bg-white hover:text-background" asChild>
+                                  <span>
+                                    <Icon name="Upload" size={16} className="mr-2" />
+                                    Загрузить
+                                  </span>
+                                </Button>
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="p-4 bg-background/95">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                            <Badge className="bg-primary text-white border-0">{item.year}</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{item.role}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-xl font-semibold">{item.title}</h3>
-                      <Badge variant="outline" className="border-primary text-primary">
-                        {item.year}
-                      </Badge>
-                    </div>
-                    <p className="text-muted-foreground">{item.role}</p>
-                  </div>
-                </Card>
-              ))}
+                ))}
+              </div>
+              
+              <div className="flex justify-center gap-2 mt-8">
+                {portfolioItems.map((_, index) => (
+                  <button
+                    key={index}
+                    className="w-2 h-2 rounded-full bg-primary/30 hover:bg-primary transition-colors"
+                    onClick={() => {
+                      const element = document.querySelector(`#portfolio .snap-x`)?.children[index] as HTMLElement;
+                      element?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
