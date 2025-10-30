@@ -85,29 +85,103 @@ const Index = () => {
         </div>
       </nav>
 
-      <section id="home" className="min-h-screen flex items-center justify-center pt-20">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <Badge className="mb-6 bg-primary/20 text-primary border-primary">
-              Художник кино и телевидения
-            </Badge>
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
-              Визуальное
-              <br />
-              <span className="text-primary">повествование</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Создаю атмосферу и визуальные миры для кино и телевидения. 
-              Реализую творческие идеи через командную работу и профессионализм.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button size="lg" onClick={() => scrollToSection('portfolio')} className="bg-primary hover:bg-primary/90">
-                Смотреть портфолио
-                <Icon name="ArrowRight" size={20} className="ml-2" />
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => scrollToSection('contact')}>
-                Связаться
-              </Button>
+      <section id="home" className="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 w-64 h-80 bg-primary/20 rounded-lg transform -rotate-12" />
+          <div className="absolute bottom-20 right-10 w-72 h-96 bg-primary/20 rounded-lg transform rotate-6" />
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div className="order-2 md:order-1 animate-fade-in">
+              <Badge className="mb-6 bg-primary/20 text-primary border-primary text-sm playfair">
+                Художник кино и телевидения
+              </Badge>
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                Визуальное
+                <br />
+                <span className="text-primary playfair italic">повествование</span>
+              </h1>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                Создаю атмосферу и визуальные миры для кино и телевидения. 
+                Реализую творческие идеи через командную работу и профессионализм.
+              </p>
+              <div className="flex gap-4">
+                <Button size="lg" onClick={() => scrollToSection('portfolio')} className="bg-primary hover:bg-primary/90">
+                  Смотреть портфолио
+                  <Icon name="ArrowRight" size={20} className="ml-2" />
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => scrollToSection('contact')}>
+                  Связаться
+                </Button>
+              </div>
+            </div>
+            
+            <div className="order-1 md:order-2 relative">
+              <div className="torn-paper transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                <div className="aspect-[3/4] bg-gradient-to-br from-gray-800 to-gray-900 relative overflow-hidden group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id="hero-image-upload"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        const img = document.getElementById('hero-image') as HTMLImageElement;
+                        if (img) img.src = url;
+                      }
+                    }}
+                  />
+                  <img 
+                    id="hero-image"
+                    src="https://cdn.poehali.dev/files/3db00a4d-201b-4743-9f7a-1f64569a4fcf.jpg"
+                    alt="Portfolio"
+                    className="w-full h-full object-cover"
+                  />
+                  <label 
+                    htmlFor="hero-image-upload"
+                    className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center"
+                  >
+                    <div className="text-center">
+                      <Icon name="Upload" size={48} className="text-white mx-auto mb-2" />
+                      <p className="text-white font-medium">Загрузить фото</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              
+              <div className="absolute -bottom-8 -left-8 w-48 h-64 torn-paper transform -rotate-12 hidden md:block">
+                <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 relative overflow-hidden group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id="hero-image-2-upload"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        const img = document.getElementById('hero-image-2') as HTMLImageElement;
+                        if (img) img.src = url;
+                      }
+                    }}
+                  />
+                  <img 
+                    id="hero-image-2"
+                    src=""
+                    alt="Secondary"
+                    className="w-full h-full object-cover"
+                  />
+                  <label 
+                    htmlFor="hero-image-2-upload"
+                    className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors cursor-pointer flex items-center justify-center"
+                  >
+                    <Icon name="Plus" size={32} className="text-white" />
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -241,14 +315,20 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="portfolio" className="py-32 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/20 to-transparent" />
+      <section id="portfolio" className="py-32 relative overflow-hidden bg-gradient-to-b from-background via-secondary/20 to-background">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-96 h-64 border-2 border-primary/30 rounded-lg transform -rotate-6" />
+          <div className="absolute bottom-32 right-32 w-80 h-96 border-2 border-primary/30 rounded-lg transform rotate-12" />
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold mb-12 text-center">Портфолио</h2>
+            <div className="text-center mb-16">
+              <h2 className="text-6xl md:text-7xl font-bold mb-4 playfair italic">Портфолио</h2>
+              <div className="w-32 h-1 bg-primary mx-auto" />
+              <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto">
+                Избранные работы и проекты, воплотившие творческое видение на экране
+              </p>
+            </div>
             <div className="relative">
               <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory">
                 {portfolioItems.map((item, index) => (
@@ -259,16 +339,17 @@ const Index = () => {
                       transform: `rotate(${index % 2 === 0 ? -2 : 2}deg)`,
                     }}
                   >
-                    <div className="bg-background border-8 border-white/90 shadow-2xl p-2 hover:scale-105 transition-transform duration-300">
-                      <div className="relative bg-card border-2 border-dashed border-primary/30">
-                        <div className="absolute -left-3 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent flex flex-col justify-around py-4">
-                          {[...Array(8)].map((_, i) => (
-                            <div key={i} className="w-full h-3 bg-background border border-border rounded-sm" />
+                    <div className="relative bg-background border-[12px] border-white shadow-2xl p-3 hover:scale-105 hover:shadow-primary/20 transition-all duration-300">
+                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary rounded-full shadow-lg" />
+                      <div className="relative bg-card border-[3px] border-primary/40">
+                        <div className="absolute -left-4 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent flex flex-col justify-around py-6">
+                          {[...Array(10)].map((_, i) => (
+                            <div key={i} className="w-full h-4 bg-background border-2 border-primary/60 rounded-sm shadow-sm" />
                           ))}
                         </div>
-                        <div className="absolute -right-3 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent flex flex-col justify-around py-4">
-                          {[...Array(8)].map((_, i) => (
-                            <div key={i} className="w-full h-3 bg-background border border-border rounded-sm" />
+                        <div className="absolute -right-4 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent flex flex-col justify-around py-6">
+                          {[...Array(10)].map((_, i) => (
+                            <div key={i} className="w-full h-4 bg-background border-2 border-primary/60 rounded-sm shadow-sm" />
                           ))}
                         </div>
                         
@@ -304,12 +385,18 @@ const Index = () => {
                           </div>
                         )}
                         
-                        <div className="p-4 bg-background/95">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                            <Badge className="bg-primary text-white border-0">{item.year}</Badge>
+                        <div className="p-5 bg-gradient-to-b from-background to-secondary/30">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-xl font-bold text-foreground playfair">{item.title}</h3>
+                            <Badge className="bg-primary text-white border-0 text-xs px-3 py-1">{item.year}</Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">{item.role}</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{item.role}</p>
+                          <div className="mt-3 pt-3 border-t border-border/50">
+                            <div className="flex items-center gap-2 text-xs text-primary">
+                              <Icon name="Film" size={14} />
+                              <span className="font-medium">Cinema Art</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
