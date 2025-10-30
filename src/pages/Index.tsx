@@ -14,11 +14,8 @@ const Index = () => {
     { title: 'ТВ-шоу', year: '2023', role: 'Арт-директор', video: '' },
     { title: 'Документальный фильм', year: '2022', role: 'Художник', video: '' },
   ]);
-  const [awards, setAwards] = useState([
-    { name: 'Золотой орел', year: '2024', category: 'Лучшая работа художника', video: '' },
-    { name: 'ТЭФИ', year: '2023', category: 'Художник года', video: '' },
-    { name: 'Ника', year: '2022', category: 'Лучшая сценография', video: '' },
-  ]);
+  const [awardVideo, setAwardVideo] = useState('');
+  const [showreelVideo, setShowreelVideo] = useState('');
   const portfolioVideoRef = useRef<HTMLInputElement>(null);
   const awardVideoRef = useRef<HTMLInputElement>(null);
 
@@ -37,20 +34,37 @@ const Index = () => {
     }
   };
 
-  const handleAwardVideoUpload = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAwardVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const videoUrl = URL.createObjectURL(file);
-      const newAwards = [...awards];
-      newAwards[index].video = videoUrl;
-      setAwards(newAwards);
+      setAwardVideo(videoUrl);
+    }
+  };
+
+  const handleShowreelUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const videoUrl = URL.createObjectURL(file);
+      setShowreelVideo(videoUrl);
     }
   };
 
   const education = [
-    { institution: 'ВГИК', degree: 'Магистр', field: 'Художник кино и телевидения', year: '2015-2020' },
-    { institution: 'Курсы повышения квалификации', degree: 'Сертификат', field: 'Современные технологии в киноискусстве', year: '2021' },
+    { institution: 'ГИТР', degree: 'Специальность', field: 'Художник кино и телевидения, художник комбинированных съемок', year: '' },
   ];
+
+  const [socialLinks, setSocialLinks] = useState({
+    telegram: '',
+    whatsapp: '',
+    instagram: '',
+    linkedin: '',
+    facebook: ''
+  });
+
+  const handleSocialLinkChange = (platform: string, value: string) => {
+    setSocialLinks(prev => ({ ...prev, [platform]: value }));
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,13 +108,13 @@ const Index = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 animate-fade-in">
-              <Badge className="mb-6 bg-primary/20 text-primary border-primary text-sm playfair">
-                Художник кино и телевидения
+              <Badge className="mb-6 bg-primary/20 text-primary border-primary text-sm">
+                ХУДОЖНИК КИНО И ТЕЛЕВИДЕНИЯ
               </Badge>
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                Визуальное
+              <h1 className="text-5xl md:text-8xl font-bold mb-6 leading-tight tracking-wider">
+                ВИЗУАЛЬНОЕ
                 <br />
-                <span className="text-primary playfair italic">повествование</span>
+                <span className="text-primary anton">ПОВЕСТВОВАНИЕ</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Создаю атмосферу и визуальные миры для кино и телевидения. 
@@ -236,52 +250,47 @@ const Index = () => {
       <section id="awards" className="py-32">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-5xl font-bold mb-12 text-center">Награды и достижения</h2>
-            <div className="space-y-6">
-              {awards.map((award, index) => (
-                <Card key={index} className="p-8 bg-card border-border hover:border-primary transition-all hover:scale-[1.02]">
-                  <div className="flex items-start gap-6">
-                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Icon name="Award" size={32} className="text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-2xl font-semibold">{award.name}</h3>
-                        <Badge variant="outline" className="border-primary text-primary">
-                          {award.year}
-                        </Badge>
-                      </div>
-                      <p className="text-muted-foreground mb-4">{award.category}</p>
-                      {award.video ? (
-                        <div className="mt-4">
-                          <video controls className="w-full rounded-lg border border-border">
-                            <source src={award.video} type="video/mp4" />
-                          </video>
-                        </div>
-                      ) : (
-                        <div className="mt-4">
-                          <input
-                            type="file"
-                            accept="video/*"
-                            onChange={(e) => handleAwardVideoUpload(index, e)}
-                            className="hidden"
-                            id={`award-video-${index}`}
-                          />
-                          <label htmlFor={`award-video-${index}`}>
-                            <Button variant="outline" className="cursor-pointer" asChild>
-                              <span>
-                                <Icon name="Upload" size={16} className="mr-2" />
-                                Загрузить видео
-                              </span>
-                            </Button>
-                          </label>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+            <h2 className="text-6xl font-bold mb-12 text-center tracking-wider">НАГРАДЫ И ДОСТИЖЕНИЯ</h2>
+            <Card className="p-10 bg-card border-2 border-primary/40 hover:border-primary transition-all">
+              <div className="flex items-center gap-6 mb-6">
+                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <Icon name="Award" size={48} className="text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold mb-2 tracking-wide">МОИ ДОСТИЖЕНИЯ</h3>
+                  <p className="text-muted-foreground text-lg">Загрузите видео с наградами и достижениями</p>
+                </div>
+              </div>
+              
+              {awardVideo ? (
+                <div className="relative group">
+                  <video controls className="w-full rounded-lg border-2 border-primary/40">
+                    <source src={awardVideo} type="video/mp4" />
+                  </video>
+                  <button
+                    onClick={() => setAwardVideo('')}
+                    className="absolute top-4 right-4 bg-primary text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Icon name="Trash2" size={20} />
+                  </button>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-primary/40 rounded-lg p-12 text-center hover:border-primary transition-colors">
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={handleAwardVideoUpload}
+                    className="hidden"
+                    id="award-video-upload"
+                  />
+                  <label htmlFor="award-video-upload" className="cursor-pointer">
+                    <Icon name="Upload" size={64} className="text-primary/60 mx-auto mb-4" />
+                    <p className="text-xl font-semibold mb-2">Загрузить видео</p>
+                    <p className="text-muted-foreground">Нажмите чтобы выбрать файл</p>
+                  </label>
+                </div>
+              )}
+            </Card>
           </div>
         </div>
       </section>
@@ -289,28 +298,21 @@ const Index = () => {
       <section id="education" className="py-32 bg-card/50">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-5xl font-bold mb-12 text-center">Образование</h2>
-            <div className="space-y-6">
-              {education.map((item, index) => (
-                <Card key={index} className="p-8 bg-card border-border hover:border-primary transition-colors">
-                  <div className="flex items-start gap-6">
-                    <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Icon name="GraduationCap" size={32} className="text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-2xl font-semibold">{item.institution}</h3>
-                        <Badge variant="outline" className="border-primary text-primary">
-                          {item.year}
-                        </Badge>
-                      </div>
-                      <p className="text-lg mb-1">{item.degree}</p>
-                      <p className="text-muted-foreground">{item.field}</p>
-                    </div>
+            <h2 className="text-6xl font-bold mb-12 text-center tracking-wider">ОБРАЗОВАНИЕ</h2>
+            {education.map((item, index) => (
+              <Card key={index} className="p-10 bg-card border-2 border-primary/40 hover:border-primary transition-colors">
+                <div className="flex items-start gap-8">
+                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <Icon name="GraduationCap" size={48} className="text-primary" />
                   </div>
-                </Card>
-              ))}
-            </div>
+                  <div className="flex-1">
+                    <h3 className="text-3xl font-bold mb-3 tracking-wide">{item.institution}</h3>
+                    <p className="text-xl mb-2 text-primary">{item.degree}</p>
+                    <p className="text-lg text-muted-foreground leading-relaxed">{item.field}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -323,9 +325,9 @@ const Index = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-6xl md:text-7xl font-bold mb-4 playfair italic">Портфолио</h2>
+              <h2 className="text-7xl md:text-8xl font-bold mb-4 tracking-wider anton">ПОРТФОЛИО</h2>
               <div className="w-32 h-1 bg-primary mx-auto" />
-              <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground mt-6 max-w-2xl mx-auto">
                 Избранные работы и проекты, воплотившие творческое видение на экране
               </p>
             </div>
@@ -417,57 +419,253 @@ const Index = () => {
                 ))}
               </div>
             </div>
+            
+            <div className="mt-16 max-w-6xl mx-auto">
+              <Card className="overflow-hidden bg-card border-2 border-primary/40 hover:border-primary transition-all">
+                <div className="p-8 bg-gradient-to-r from-background to-secondary/20">
+                  <div className="flex items-center gap-6 mb-6">
+                    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
+                      <Icon name="Play" size={48} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-4xl font-bold tracking-wider mb-2">SHOWREEL</h3>
+                      <p className="text-lg text-muted-foreground">Демонстрационное видео моих работ</p>
+                    </div>
+                  </div>
+                  
+                  {showreelVideo ? (
+                    <div className="relative group">
+                      <video controls className="w-full aspect-video rounded-lg border-2 border-primary/40">
+                        <source src={showreelVideo} type="video/mp4" />
+                      </video>
+                      <button
+                        onClick={() => setShowreelVideo('')}
+                        className="absolute top-4 right-4 bg-primary text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Icon name="Trash2" size={20} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-primary/40 rounded-lg p-16 text-center hover:border-primary transition-colors aspect-video flex items-center justify-center">
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={handleShowreelUpload}
+                        className="hidden"
+                        id="showreel-upload"
+                      />
+                      <label htmlFor="showreel-upload" className="cursor-pointer">
+                        <Icon name="Upload" size={80} className="text-primary/60 mx-auto mb-4" />
+                        <p className="text-2xl font-bold mb-2">Загрузить Showreel</p>
+                        <p className="text-muted-foreground text-lg">Нажмите чтобы выбрать видео</p>
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="contact" className="py-32 bg-card/50">
         <div className="container mx-auto px-6">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-5xl font-bold mb-12 text-center">Контакты</h2>
-            <Card className="p-8 bg-card border-border">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-6xl font-bold mb-12 text-center tracking-wider">КОНТАКТЫ</h2>
+            <Card className="p-10 bg-card border-2 border-primary/40">
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Icon name="Mail" size={24} className="text-primary" />
+                  <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Icon name="Mail" size={28} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="text-lg">artist@example.com</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide">Email</p>
+                    <p className="text-xl font-semibold">artist@example.com</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Icon name="Phone" size={24} className="text-primary" />
+                  <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Icon name="Phone" size={28} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Телефон</p>
-                    <p className="text-lg">+7 (999) 123-45-67</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide">Телефон</p>
+                    <p className="text-xl font-semibold">+7 (999) 123-45-67</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Icon name="MapPin" size={24} className="text-primary" />
+                  <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Icon name="MapPin" size={28} className="text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Локация</p>
-                    <p className="text-lg">Москва, Россия</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide">Локация</p>
+                    <p className="text-xl font-semibold">Москва, Россия</p>
                   </div>
                 </div>
               </div>
+              
               <Separator className="my-8" />
-              <div className="flex gap-4 justify-center">
-                <Button variant="outline" size="icon" className="hover:bg-primary hover:text-white hover:border-primary">
-                  <Icon name="Instagram" size={20} />
-                </Button>
-                <Button variant="outline" size="icon" className="hover:bg-primary hover:text-white hover:border-primary">
-                  <Icon name="Linkedin" size={20} />
-                </Button>
-                <Button variant="outline" size="icon" className="hover:bg-primary hover:text-white hover:border-primary">
-                  <Icon name="Facebook" size={20} />
-                </Button>
+              
+              <div>
+                <h3 className="text-2xl font-bold mb-6 text-center tracking-wide">СОЦИАЛЬНЫЕ СЕТИ</h3>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="relative group">
+                    <input
+                      type="url"
+                      placeholder="Telegram"
+                      value={socialLinks.telegram}
+                      onChange={(e) => handleSocialLinkChange('telegram', e.target.value)}
+                      className="hidden peer"
+                      id="telegram-input"
+                    />
+                    <a
+                      href={socialLinks.telegram || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                        socialLinks.telegram ? 'border-primary bg-primary/10' : 'border-border'
+                      }`}
+                      onClick={(e) => {
+                        if (!socialLinks.telegram) {
+                          e.preventDefault();
+                          document.getElementById('telegram-input')?.focus();
+                        }
+                      }}
+                    >
+                      <Icon name="Send" size={28} className="text-primary" />
+                      <span className="text-xs">Telegram</span>
+                    </a>
+                    <label htmlFor="telegram-input" className="absolute -top-2 -right-2 bg-primary text-white p-1 rounded-full cursor-pointer hover:scale-110 transition-transform">
+                      <Icon name="Edit" size={14} />
+                    </label>
+                  </div>
+                  
+                  <div className="relative group">
+                    <input
+                      type="url"
+                      placeholder="WhatsApp"
+                      value={socialLinks.whatsapp}
+                      onChange={(e) => handleSocialLinkChange('whatsapp', e.target.value)}
+                      className="hidden peer"
+                      id="whatsapp-input"
+                    />
+                    <a
+                      href={socialLinks.whatsapp || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                        socialLinks.whatsapp ? 'border-primary bg-primary/10' : 'border-border'
+                      }`}
+                      onClick={(e) => {
+                        if (!socialLinks.whatsapp) {
+                          e.preventDefault();
+                          document.getElementById('whatsapp-input')?.focus();
+                        }
+                      }}
+                    >
+                      <Icon name="MessageCircle" size={28} className="text-primary" />
+                      <span className="text-xs">WhatsApp</span>
+                    </a>
+                    <label htmlFor="whatsapp-input" className="absolute -top-2 -right-2 bg-primary text-white p-1 rounded-full cursor-pointer hover:scale-110 transition-transform">
+                      <Icon name="Edit" size={14} />
+                    </label>
+                  </div>
+                  
+                  <div className="relative group">
+                    <input
+                      type="url"
+                      placeholder="Instagram"
+                      value={socialLinks.instagram}
+                      onChange={(e) => handleSocialLinkChange('instagram', e.target.value)}
+                      className="hidden peer"
+                      id="instagram-input"
+                    />
+                    <a
+                      href={socialLinks.instagram || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                        socialLinks.instagram ? 'border-primary bg-primary/10' : 'border-border'
+                      }`}
+                      onClick={(e) => {
+                        if (!socialLinks.instagram) {
+                          e.preventDefault();
+                          document.getElementById('instagram-input')?.focus();
+                        }
+                      }}
+                    >
+                      <Icon name="Instagram" size={28} className="text-primary" />
+                      <span className="text-xs">Instagram</span>
+                    </a>
+                    <label htmlFor="instagram-input" className="absolute -top-2 -right-2 bg-primary text-white p-1 rounded-full cursor-pointer hover:scale-110 transition-transform">
+                      <Icon name="Edit" size={14} />
+                    </label>
+                  </div>
+                  
+                  <div className="relative group">
+                    <input
+                      type="url"
+                      placeholder="LinkedIn"
+                      value={socialLinks.linkedin}
+                      onChange={(e) => handleSocialLinkChange('linkedin', e.target.value)}
+                      className="hidden peer"
+                      id="linkedin-input"
+                    />
+                    <a
+                      href={socialLinks.linkedin || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                        socialLinks.linkedin ? 'border-primary bg-primary/10' : 'border-border'
+                      }`}
+                      onClick={(e) => {
+                        if (!socialLinks.linkedin) {
+                          e.preventDefault();
+                          document.getElementById('linkedin-input')?.focus();
+                        }
+                      }}
+                    >
+                      <Icon name="Linkedin" size={28} className="text-primary" />
+                      <span className="text-xs">LinkedIn</span>
+                    </a>
+                    <label htmlFor="linkedin-input" className="absolute -top-2 -right-2 bg-primary text-white p-1 rounded-full cursor-pointer hover:scale-110 transition-transform">
+                      <Icon name="Edit" size={14} />
+                    </label>
+                  </div>
+                  
+                  <div className="relative group">
+                    <input
+                      type="url"
+                      placeholder="Facebook"
+                      value={socialLinks.facebook}
+                      onChange={(e) => handleSocialLinkChange('facebook', e.target.value)}
+                      className="hidden peer"
+                      id="facebook-input"
+                    />
+                    <a
+                      href={socialLinks.facebook || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                        socialLinks.facebook ? 'border-primary bg-primary/10' : 'border-border'
+                      }`}
+                      onClick={(e) => {
+                        if (!socialLinks.facebook) {
+                          e.preventDefault();
+                          document.getElementById('facebook-input')?.focus();
+                        }
+                      }}
+                    >
+                      <Icon name="Facebook" size={28} className="text-primary" />
+                      <span className="text-xs">Facebook</span>
+                    </a>
+                    <label htmlFor="facebook-input" className="absolute -top-2 -right-2 bg-primary text-white p-1 rounded-full cursor-pointer hover:scale-110 transition-transform">
+                      <Icon name="Edit" size={14} />
+                    </label>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground text-center mt-4">Нажмите на иконку карандаша чтобы добавить ссылку</p>
               </div>
             </Card>
           </div>
